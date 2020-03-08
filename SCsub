@@ -1,0 +1,6 @@
+Import('env')
+
+env.Append(LIBS=['ssl', 'crypto'])
+
+module_env = env.Clone()
+module_env.add_source_files(env.modules_sources, "*.cpp")
