@@ -1,4 +1,5 @@
 ## godot-wow-srp
+Note: this doesn't work yet.
 A C++ Godot module for World of Warcraft client-side SRP   
 # How to use
 This was tested with Godot 3.2 stable, it might work with older or newer versions.  
