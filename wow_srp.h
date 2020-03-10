@@ -4,6 +4,7 @@
 #include "core/reference.h"
 #include "core/method_bind_ext.gen.inc"
 #include "string.h"
+#include "core/variant.h"
 #include "BigNum.h"
 
 #include <openssl/evp.h>
@@ -20,7 +21,10 @@ public:
     void step1(String username, String password,
                 String B, String g, String N, String s);
 
-    String get_S() const;
+    PoolByteArray get_S() const;
+    PoolByteArray get_M() const;
+    PoolByteArray get_A() const;
+    PoolByteArray get_K() const;
 
     Wow_SRP();
 };

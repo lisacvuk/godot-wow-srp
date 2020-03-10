@@ -1,5 +1,7 @@
 #include "BigNum.h"
 
+#include "core/variant.h"
+
 #include <algorithm>
 
 #include <openssl/bn.h>
@@ -50,6 +52,19 @@ unsigned char* BigNum::to_bytearray(int length){
     BN_bn2bin(bn, temp);
 
     return temp;
+}
+
+PoolByteArray BigNum::to_poolbytearray(int length) const{
+    unsigned char* temp;
+    temp = new unsigned char[length];
+    
+    BN_bn2bin(bn, temp);
+
+    PoolByteArray out;
+    for(int i = 0; i < length; i++){
+        out.append(temp[i]);
+    }
+    return out;
 }
 
 char* BigNum::to_hex_string() const{

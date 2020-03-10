@@ -1,5 +1,7 @@
 #pragma once
 
+#include "core/variant.h"
+
 #include <openssl/bn.h>
 
 class BigNum{
@@ -13,6 +15,8 @@ public:
 
     unsigned char* to_rev_bytearray(int length);
     unsigned char* to_bytearray(int length);
+
+    PoolByteArray to_poolbytearray(int length) const;
 
     char* to_hex_string() const;
 
