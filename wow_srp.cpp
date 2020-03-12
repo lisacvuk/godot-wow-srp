@@ -16,6 +16,24 @@ Wow_SRP::Wow_SRP() {
     a.from_hex("8266845392F83273477A763E6356B795737D49");
 }
 
+PoolByteArray Wow_SRP::generateHashLogonProof() const{
+    unsigned char* result = new unsigned char[20];
+
+    EVP_DigestInit(digest, EVP_sha1());
+    EVP_DigestUpdate(digest, A.to_rev_bytearray(32), 32);
+    EVP_DigestUpdate(digest, M.to_bytearray(20), 20);
+    EVP_DigestUpdate(digest, K.to_rev_bytearray(40), 40);
+
+    EVP_DigestFinal(digest, result, NULL);
+
+    BigNum temp;
+    temp.from_bin(result, 20);
+
+    delete[] result;
+
+    return temp.to_poolbytearray(20);
+}
+
 void Wow_SRP::step1(String username, String password,
                 String _B, String _g, String _N, String _s) {
 
@@ -44,9 +62,9 @@ void Wow_SRP::step1(String username, String password,
     u.from_bin(result, 20);
 
     EVP_DigestInit(digest, EVP_sha1());
-    //EVP_DigestUpdate(digest, username.c_str(), username.length());
-    EVP_DigestUpdate(digest, "TEST:TEST", 9);
-    //EVP_DigestUpdate(digest, password.c_str(), password.length());
+    EVP_DigestUpdate(digest, username.ascii(), username.length());
+    EVP_DigestUpdate(digest, ":", 1);
+    EVP_DigestUpdate(digest, password.ascii(), password.length());
 
     EVP_DigestFinal(digest, result, NULL);
     std::reverse(result, result+20);
@@ -114,11 +132,10 @@ void Wow_SRP::step1(String username, String password,
     t3.from_bin(N_hash, 20);
 
     std::reverse(vK, vK+40);
-    //BigNum K;
     K.from_bin(vK, 40);
 
     EVP_DigestInit(digest, EVP_sha1());
-    EVP_DigestUpdate(digest, "TEST", 4);
+    EVP_DigestUpdate(digest, username.ascii(), username.length());
 
     EVP_DigestFinal(digest, result, NULL);
  
@@ -136,25 +153,9 @@ void Wow_SRP::step1(String username, String password,
 
     EVP_DigestFinal(digest, result, NULL);
 
-    //BigNum M;
     M.from_bin(result, 20);
 
-    std::cout << "B=" << B.to_hex_string() << std::endl;
-    std::cout << "g=" << g.to_hex_string() << std::endl;
-    std::cout << "N=" << N.to_hex_string() << std::endl;
-    std::cout << "s=" << s.to_hex_string() << std::endl;
-
-    std::cout << "A=" << A.to_hex_string() << std::endl;
-    std::cout << "u=" << u.to_hex_string() << std::endl;
-    std::cout << "p=" << p.to_hex_string() << std::endl;
-    std::cout << "x=" << x.to_hex_string() << std::endl;
-    std::cout << "S=" << S.to_hex_string() << std::endl;
-
-    std::cout << "t3=" << t3.to_hex_string() << std::endl;
-    std::cout << "t4=" << t4.to_hex_string() << std::endl;
-    std::cout << "K=" << K.to_hex_string() << std::endl;
-
-    std::cout << "M=" << M.to_hex_string() << std::endl;
+    delete[] result;
 }
 
 PoolByteArray Wow_SRP::get_S() const{
@@ -170,11 +171,12 @@ PoolByteArray Wow_SRP::get_A() const{
 }
 
 PoolByteArray Wow_SRP::get_K() const{
-    return K.to_poolbytearray(20);
+    return K.to_poolbytearray(40);
 }
 
 void Wow_SRP::_bind_methods() {
     ClassDB::bind_method(D_METHOD("step1", "username", "password", "B", "g", "N", "s"), &Wow_SRP::step1);
+    ClassDB::bind_method(D_METHOD("generateHashLogonProof"), &Wow_SRP::generateHashLogonProof);
     ClassDB::bind_method(D_METHOD("get_S"), &Wow_SRP::get_S);
     ClassDB::bind_method(D_METHOD("get_M"), &Wow_SRP::get_M);
     ClassDB::bind_method(D_METHOD("get_A"), &Wow_SRP::get_A);

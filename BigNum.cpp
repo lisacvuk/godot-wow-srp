@@ -34,7 +34,7 @@ BigNum BigNum::from_bin(const unsigned char* data, int length){
     return *this;
 }
 
-unsigned char* BigNum::to_rev_bytearray(int length){
+unsigned char* BigNum::to_rev_bytearray(int length) const{
     unsigned char* temp;
     temp = new unsigned char[length];
 
@@ -45,7 +45,7 @@ unsigned char* BigNum::to_rev_bytearray(int length){
     return temp;
 }
 
-unsigned char* BigNum::to_bytearray(int length){
+unsigned char* BigNum::to_bytearray(int length) const{
     unsigned char* temp;
     temp = new unsigned char[length];
 
@@ -64,6 +64,9 @@ PoolByteArray BigNum::to_poolbytearray(int length) const{
     for(int i = 0; i < length; i++){
         out.append(temp[i]);
     }
+
+    delete[] temp;
+
     return out;
 }
 

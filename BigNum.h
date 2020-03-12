@@ -13,8 +13,8 @@ public:
     BigNum from_dec(const char* data);
     BigNum from_bin(const unsigned char* data, int length);
 
-    unsigned char* to_rev_bytearray(int length);
-    unsigned char* to_bytearray(int length);
+    unsigned char* to_rev_bytearray(int length) const;
+    unsigned char* to_bytearray(int length) const;
 
     PoolByteArray to_poolbytearray(int length) const;
 

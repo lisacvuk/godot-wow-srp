@@ -18,6 +18,7 @@ protected:
     static void _bind_methods();
 
 public:
+    PoolByteArray generateHashLogonProof() const;
     void step1(String username, String password,
                 String B, String g, String N, String s);
 
